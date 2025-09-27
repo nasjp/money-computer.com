@@ -1,8 +1,8 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Clock, User } from "lucide-react"
-import Link from "next/link"
+import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
+import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { Button } from "@/components/ui/button";
 
 export default function HelveticaLegacyArticle() {
   return (
@@ -68,7 +68,9 @@ export default function HelveticaLegacyArticle() {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-light mb-6 border-l-2 border-foreground pl-4">客観性への追求</h2>
+                  <h2 className="text-2xl font-light mb-6 border-l-2 border-foreground pl-4">
+                    客観性への追求
+                  </h2>
 
                   <p className="leading-relaxed mb-6">
                     ヘルベチカの最大の特徴は、その「透明性」にある。文字そのものが主張することなく、
@@ -80,7 +82,9 @@ export default function HelveticaLegacyArticle() {
                     <p className="text-lg italic leading-relaxed">
                       「良いタイポグラフィは見えないものである。それは読み手の注意を文字から内容へと導く。」
                     </p>
-                    <cite className="text-sm text-muted-foreground mt-2 block">— ヤン・チヒョルト</cite>
+                    <cite className="text-sm text-muted-foreground mt-2 block">
+                      — ヤン・チヒョルト
+                    </cite>
                   </blockquote>
                 </section>
 
@@ -97,16 +101,21 @@ export default function HelveticaLegacyArticle() {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-light mb-6 border-l-2 border-foreground pl-4">現代への影響</h2>
+                  <h2 className="text-2xl font-light mb-6 border-l-2 border-foreground pl-4">
+                    現代への影響
+                  </h2>
 
                   <p className="leading-relaxed mb-6">
-                    今日のデジタルデザインにおいても、ヘルベチカの影響は色濃く残っている。 AppleのSan
-                    Francisco、GoogleのRoboto、MicrosoftのSegoe UIなど、
+                    今日のデジタルデザインにおいても、ヘルベチカの影響は色濃く残っている。
+                    AppleのSan Francisco、GoogleのRoboto、MicrosoftのSegoe
+                    UIなど、
                     主要なテクノロジー企業の書体は、すべてヘルベチカの遺伝子を受け継いでいる。
                   </p>
 
                   <div className="bg-muted/50 p-6 rounded-sm my-8">
-                    <h3 className="text-lg font-medium mb-4">ヘルベチカの特徴</h3>
+                    <h3 className="text-lg font-medium mb-4">
+                      ヘルベチカの特徴
+                    </h3>
                     <ul className="space-y-2 text-sm">
                       <li>• 高いx-height（小文字の高さ）による優れた可読性</li>
                       <li>• 均一な文字幅による整然とした印象</li>
@@ -124,16 +133,28 @@ export default function HelveticaLegacyArticle() {
                   <h3 className="text-lg font-medium mb-4">関連記事</h3>
                   <div className="space-y-4">
                     <article className="border-b border-border pb-4 last:border-b-0 last:pb-0">
-                      <h4 className="text-sm font-medium mb-2 leading-tight">グリッドシステムの基本原理</h4>
-                      <p className="text-xs text-muted-foreground">ヨゼフ・ミューラー＝ブロックマンの理論</p>
+                      <h4 className="text-sm font-medium mb-2 leading-tight">
+                        グリッドシステムの基本原理
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        ヨゼフ・ミューラー＝ブロックマンの理論
+                      </p>
                     </article>
                     <article className="border-b border-border pb-4 last:border-b-0 last:pb-0">
-                      <h4 className="text-sm font-medium mb-2 leading-tight">バウハウスとスイススタイル</h4>
-                      <p className="text-xs text-muted-foreground">機能主義デザインの系譜</p>
+                      <h4 className="text-sm font-medium mb-2 leading-tight">
+                        バウハウスとスイススタイル
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        機能主義デザインの系譜
+                      </p>
                     </article>
                     <article>
-                      <h4 className="text-sm font-medium mb-2 leading-tight">現代UIデザインへの影響</h4>
-                      <p className="text-xs text-muted-foreground">デジタル時代のタイポグラフィ</p>
+                      <h4 className="text-sm font-medium mb-2 leading-tight">
+                        現代UIデザインへの影響
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        デジタル時代のタイポグラフィ
+                      </p>
                     </article>
                   </div>
                 </div>
@@ -144,7 +165,9 @@ export default function HelveticaLegacyArticle() {
                     <div className="w-16 h-16 bg-muted rounded-full"></div>
                     <div>
                       <h4 className="font-medium">田中 美穂</h4>
-                      <p className="text-sm text-muted-foreground">タイポグラフィ研究者、武蔵野美術大学准教授</p>
+                      <p className="text-sm text-muted-foreground">
+                        タイポグラフィ研究者、武蔵野美術大学准教授
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -156,9 +179,15 @@ export default function HelveticaLegacyArticle() {
         <footer className="mt-16 pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex flex-wrap gap-2">
-              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-sm">ヘルベチカ</span>
-              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-sm">スイスタイポグラフィ</span>
-              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-sm">デザイン史</span>
+              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-sm">
+                ヘルベチカ
+              </span>
+              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-sm">
+                スイスタイポグラフィ
+              </span>
+              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-sm">
+                デザイン史
+              </span>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
@@ -174,5 +203,5 @@ export default function HelveticaLegacyArticle() {
 
       <Footer />
     </main>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import { Header } from "@/components/header"
-import { Hero } from "@/components/hero"
-import { ArticleGrid } from "@/components/article-grid"
-import { Principles } from "@/components/principles"
-import { Timeline } from "@/components/timeline"
-import { Footer } from "@/components/footer"
+import { ArticleGrid } from "@/components/article-grid";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { Hero } from "@/components/hero";
+import { Principles } from "@/components/principles";
+import { Timeline } from "@/components/timeline";
 
 export default function Home() {
   return (
@@ -15,5 +15,5 @@ export default function Home() {
       <Timeline />
       <Footer />
     </main>
-  )
+  );
 }

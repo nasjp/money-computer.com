@@ -11,7 +11,8 @@ export function Hero() {
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl swiss-text leading-relaxed">
               スイス・タイポグラフィは、明確性、読みやすさ、そして客観的なコミュニケーションを重視する
-              デザイン哲学です。グリッドシステムとサンセリフ書体を用いた、 ミニマルで機能的なアプローチを探求します。
+              デザイン哲学です。グリッドシステムとサンセリフ書体を用いた、
+              ミニマルで機能的なアプローチを探求します。
             </p>
           </div>
           <div className="col-span-12 lg:col-span-4 flex items-end">
@@ -24,5 +25,5 @@ export function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }

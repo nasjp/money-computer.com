@@ -4,9 +4,12 @@ export function Footer() {
       <div className="container mx-auto">
         <div className="swiss-grid">
           <div className="col-span-12 lg:col-span-6">
-            <h3 className="text-2xl font-light tracking-tight mb-4">スイス・タイポグラフィ</h3>
+            <h3 className="text-2xl font-light tracking-tight mb-4">
+              スイス・タイポグラフィ
+            </h3>
             <p className="text-muted-foreground swiss-text leading-relaxed mb-8">
-              機能性と美しさを両立させるデザイン哲学を探求し、 現代のクリエイターに向けて情報を発信しています。
+              機能性と美しさを両立させるデザイン哲学を探求し、
+              現代のクリエイターに向けて情報を発信しています。
             </p>
             <div className="flex space-x-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-foreground transition-colors">
@@ -77,14 +80,18 @@ export function Footer() {
         <div className="border-t border-border mt-12 pt-8">
           <div className="swiss-grid items-center">
             <div className="col-span-12 lg:col-span-6">
-              <p className="text-sm text-muted-foreground">© 2025 スイス・タイポグラフィ. All rights reserved.</p>
+              <p className="text-sm text-muted-foreground">
+                © 2025 スイス・タイポグラフィ. All rights reserved.
+              </p>
             </div>
             <div className="col-span-12 lg:col-span-6 lg:text-right">
-              <p className="text-sm text-muted-foreground">Form follows function.</p>
+              <p className="text-sm text-muted-foreground">
+                Form follows function.
+              </p>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
