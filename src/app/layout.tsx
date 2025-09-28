@@ -2,8 +2,9 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type React from "react";
-import "./globals.css";
 import { Suspense } from "react";
+
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,10 +13,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "スイス・タイポグラフィ | Swiss Typography Japan",
+  title: {
+    default: "Money Computer Reading Notes",
+    template: "%s | Money Computer Reading Notes",
+  },
   description:
-    "スイス／インターナショナル・タイポグラフィの美学と原則を探求する日本語メディアサイト",
-  generator: "v0.app",
+    "洞察・実験・定着を接続し、売上レバーを磨くための読書ノートをMDXで静的生成しています。",
+  metadataBase: new URL("https://money-computer.com"),
 };
 
 export default function RootLayout({
