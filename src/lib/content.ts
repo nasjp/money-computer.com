@@ -5,7 +5,6 @@ import matter from "gray-matter";
 import { cache } from "react";
 import { z } from "zod";
 
-
 const CONTENT_ROOT = path.join(process.cwd(), "content", "contents");
 
 const FrontMatterSchema = z

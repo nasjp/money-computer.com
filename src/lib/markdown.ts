@@ -1,24 +1,31 @@
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkRehype from "remark-rehype";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
+import type { ReactNode } from "react";
+import { Fragment } from "react";
+import { jsx, jsxs } from "react/jsx-runtime";
 import rehypeSlug from "rehype-slug";
-import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { unified } from "unified";
 
 import { remarkInternalLinks } from "@/lib/remark-internal-links";
 
-export async function renderMarkdownToHtml(
+export async function renderMarkdownToReact(
   source: string,
   referenceLookup: Record<string, string>,
-) {
-  const file = await unified()
+): Promise<ReactNode> {
+  const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkInternalLinks, { referenceMap: referenceLookup })
     .use(remarkRehype)
-    .use(rehypeSlug)
-    .use(rehypeStringify)
-    .process(source);
+    .use(rehypeSlug);
 
-  return String(file);
+  const tree = await processor.run(processor.parse(source));
+
+  return toJsxRuntime(tree, {
+    Fragment,
+    jsx,
+    jsxs,
+  });
 }

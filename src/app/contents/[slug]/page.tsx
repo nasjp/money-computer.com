@@ -11,7 +11,7 @@ import {
   getPublishedContentMeta,
 } from "@/lib/content";
 import { formatDate } from "@/lib/date";
-import { renderMarkdownToHtml } from "@/lib/markdown";
+import { renderMarkdownToReact } from "@/lib/markdown";
 
 export async function generateStaticParams() {
   const meta = await getPublishedContentMeta();
@@ -75,7 +75,10 @@ export default async function ContentDetailPage({
     referenceLookup[item.bookTitle.toLowerCase()] = item.slug;
   }
 
-  const mdxHtml = await renderMarkdownToHtml(detail.body, referenceLookup);
+  const markdownContent = await renderMarkdownToReact(
+    detail.body,
+    referenceLookup,
+  );
 
   return (
     <main className="min-h-screen bg-background">
@@ -163,10 +166,9 @@ export default async function ContentDetailPage({
 
         <section id="note-body" className="bg-background">
           <div className="container mx-auto grid gap-12 px-6 py-16 lg:grid-cols-[3fr_2fr]">
-            <div
-              className="prose prose-neutral max-w-none"
-              dangerouslySetInnerHTML={{ __html: mdxHtml }}
-            />
+            <div className="prose prose-neutral max-w-none">
+              {markdownContent}
+            </div>
             <aside className="space-y-10">
               <div className="rounded-xl border border-border/80 bg-card/40 p-6">
                 <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
