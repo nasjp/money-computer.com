@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function SearchPage() {
   return (
     <main className="flex min-h-screen flex-col bg-background">
-      <SiteHeader />
+      <SiteHeader activeNav="search" />
       <section className="border-b border-border bg-accent/20">
         <div className="container mx-auto px-6 py-16">
           <div className="space-y-4 text-balance">

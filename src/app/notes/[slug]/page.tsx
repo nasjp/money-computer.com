@@ -82,7 +82,7 @@ export default async function NoteDetailPage({
 
   return (
     <main className="flex min-h-screen flex-col bg-background">
-      <SiteHeader />
+      <SiteHeader activeNav="notes" />
       <article>
         <section className="border-b border-border bg-accent/20">
           <div className="container mx-auto grid gap-8 px-6 py-16 lg:grid-cols-[3fr_2fr]">

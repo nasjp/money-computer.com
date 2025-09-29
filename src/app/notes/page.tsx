@@ -74,7 +74,7 @@ export default async function NotesPage({
 
   return (
     <main className="flex min-h-screen flex-col bg-background">
-      <SiteHeader />
+      <SiteHeader activeNav="notes" />
       <section className="border-b border-border bg-accent/20">
         <div className="container mx-auto px-6 py-16">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

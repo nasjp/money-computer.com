@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col bg-background">
-      <SiteHeader />
+      <SiteHeader activeNav="home" />
       <section className="border-b border-border bg-accent/20">
         <div className="container mx-auto grid gap-10 px-6 py-16 lg:grid-cols-[2fr_1fr] lg:items-end">
           <div className="space-y-6">
