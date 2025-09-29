@@ -2,7 +2,7 @@ import { SiteHeaderClient } from "@/components/site-header-client";
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/contents", label: "Contents" },
+  { href: "/notes", label: "Notes" },
   { href: "/search", label: "Search" },
 ] satisfies ReadonlyArray<{ href: string; label: string }>;
 

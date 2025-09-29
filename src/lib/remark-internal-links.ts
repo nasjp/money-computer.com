@@ -29,7 +29,7 @@ function resolveLabel(label: string, map: Record<string, string> | undefined) {
 }
 
 export const remarkInternalLinks: Plugin<[Options?], Root> = (options = {}) => {
-  const { referenceMap, basePath = "/contents" } = options;
+  const { referenceMap, basePath = "/notes" } = options;
 
   return (tree) => {
     visit(tree, "text", (node: Text, index, parent: Parent | null) => {

@@ -45,7 +45,7 @@ function buildFilterHref(selected: string[], tag: string) {
     params.set("tag", Array.from(normalized).join(","));
   }
   const queryString = params.toString();
-  return queryString.length > 0 ? `/contents?${queryString}` : "/contents";
+  return queryString.length > 0 ? `/notes?${queryString}` : "/notes";
 }
 
 function filterByTags(
@@ -59,7 +59,7 @@ function filterByTags(
   return meta.filter((item) => tags.every((tag) => item.tags.includes(tag)));
 }
 
-export default async function ContentsPage({
+export default async function NotesPage({
   searchParams,
 }: {
   searchParams?: Promise<{
@@ -80,7 +80,7 @@ export default async function ContentsPage({
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-4">
               <span className="text-xs uppercase tracking-[0.28em] text-muted-foreground">
-                Contents Library
+                Notes Library
               </span>
               <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 Playbookに直結する19冊の読書ノート
@@ -96,7 +96,7 @@ export default async function ContentsPage({
               </span>
               {tagFilter.length > 0 ? (
                 <Button variant="ghost" size="sm" asChild>
-                  <Link href="/contents">フィルタをリセット</Link>
+                  <Link href="/notes">フィルタをリセット</Link>
                 </Button>
               ) : null}
             </div>

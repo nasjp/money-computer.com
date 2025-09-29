@@ -11,7 +11,7 @@ interface GeneratedDocument {
   content: string;
 }
 
-const CONTENT_ROOT = path.join(process.cwd(), "content", "contents");
+const CONTENT_ROOT = path.join(process.cwd(), "content", "notes");
 const OUTPUT_PATH = path.join(
   process.cwd(),
   "src",

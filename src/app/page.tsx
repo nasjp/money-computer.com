@@ -30,13 +30,13 @@ export default async function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild size="lg" variant="outline">
-                <Link href="/contents">全コンテンツを見る</Link>
+                <Link href="/notes">全ノートを見る</Link>
               </Button>
             </div>
           </div>
           {latest ? (
             <Link
-              href={`/contents/${latest.slug}`}
+              href={`/notes/${latest.slug}`}
               className="group block rounded-lg border border-border/80 bg-card/40 p-6 transition hover:border-foreground/40 hover:bg-card"
             >
               <article className="flex flex-col gap-4">
@@ -79,10 +79,10 @@ export default async function Home() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                最近のコンテンツ
+                最近のノート
               </h2>
               <p className="text-sm text-muted-foreground">
-                最近更新されたコンテンツです。
+                最近更新されたノートです。
               </p>
             </div>
           </div>

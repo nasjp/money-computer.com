@@ -63,7 +63,7 @@ export function SearchPanel() {
         {!statusMessage && !error ? (
           <p className="text-xs text-muted-foreground">
             {query.trim().length === 0
-              ? "公開済みのコンテンツ全体を対象に検索できます。キーワードを入力してください。"
+              ? "公開済みのノート全体を対象に検索できます。キーワードを入力してください。"
               : isSearching
                 ? "検索中..."
                 : `${results.length}件ヒット`}
@@ -80,7 +80,7 @@ export function SearchPanel() {
           {results.map((result) => (
             <li key={result.id}>
               <Link
-                href={`/contents/${result.slug}`}
+                href={`/notes/${result.slug}`}
                 className="block rounded-lg border border-border/70 bg-card/30 px-5 py-4 transition hover:border-primary/60 hover:bg-card"
               >
                 <div className="flex items-center justify-between gap-3">

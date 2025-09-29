@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   if (!target) {
     return {
-      title: "コンテンツが見つかりません",
+      title: "ノートが見つかりません",
     };
   }
 
@@ -43,7 +43,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function ContentDetailPage({
+export default async function NoteDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -88,10 +88,10 @@ export default async function ContentDetailPage({
           <div className="container mx-auto grid gap-8 px-6 py-16 lg:grid-cols-[3fr_2fr]">
             <div className="space-y-6">
               <Link
-                href="/contents"
+                href="/notes"
                 className="text-xs uppercase tracking-[0.32em] text-muted-foreground transition hover:text-foreground"
               >
-                Contents
+                Notes
               </Link>
               <h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 {detail.title}
@@ -120,7 +120,7 @@ export default async function ContentDetailPage({
                 {detail.tags.map((tag) => (
                   <Link
                     key={tag}
-                    href={`/contents?tag=${encodeURIComponent(tag)}`}
+                    href={`/notes?tag=${encodeURIComponent(tag)}`}
                     className="rounded-full border border-border/80 px-3 py-1 text-xs text-muted-foreground transition hover:border-foreground/50 hover:text-foreground"
                   >
                     {tag}
@@ -179,7 +179,7 @@ export default async function ContentDetailPage({
                     outbound.map((item) => (
                       <li key={item.slug}>
                         <Link
-                          href={`/contents/${item.slug}`}
+                          href={`/notes/${item.slug}`}
                           className="transition hover:text-foreground"
                         >
                           {item.title}
@@ -203,7 +203,7 @@ export default async function ContentDetailPage({
                     backlinks.map((item) => (
                       <li key={item.slug}>
                         <Link
-                          href={`/contents/${item.slug}`}
+                          href={`/notes/${item.slug}`}
                           className="transition hover:text-foreground"
                         >
                           {item.title}

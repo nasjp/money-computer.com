@@ -20,7 +20,7 @@ export function ContentCard({
 
   return (
     <Link
-      href={`/contents/${slug}`}
+      href={`/notes/${slug}`}
       className={cn(
         "group block rounded-lg border border-border/80 bg-card/40 p-6 transition hover:border-foreground/40 hover:bg-card",
         className,
