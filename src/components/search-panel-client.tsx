@@ -86,12 +86,12 @@ export function SearchPanelClient({
       return `最近更新されたノートを ${displayContent.length} 件表示しています。`;
     }
     if (isSearching) {
-      return "検索中...";
+      return null;
     }
     if (statusMessage) {
       return null;
     }
-    return `${displayContent.length}件ヒット`;
+    return null;
   }, [error, hasQuery, isSearching, statusMessage, displayContent.length]);
 
   const showEmptyState =
