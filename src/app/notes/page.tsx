@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ContentCard } from "@/components/content-card";
@@ -5,6 +6,17 @@ import { Footer } from "@/components/footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { getPublishedContentMeta } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "ノート",
+  description:
+    "Playbookに直結する読書ノートをタグや更新日で探せます。公開中のメモを静的生成で高速に閲覧できます。",
+  openGraph: {
+    title: "ノート",
+    description:
+      "Playbookに直結する読書ノートをタグや更新日で探せます。公開中のメモを静的生成で高速に閲覧できます。",
+  },
+};
 
 function getAllTags(meta: Awaited<ReturnType<typeof getPublishedContentMeta>>) {
   const map = new Map<string, number>();
@@ -131,11 +143,7 @@ export default async function NotesPage({
         <div className="container mx-auto px-6 py-16">
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((content) => (
-              <ContentCard
-                key={content.slug}
-                content={content}
-                highlightInsight
-              />
+              <ContentCard key={content.slug} content={content} />
             ))}
           </div>
         </div>

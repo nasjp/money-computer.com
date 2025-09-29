@@ -29,10 +29,11 @@ type DisplayItem = {
 const DESCRIPTION_MAX_LENGTH = 160;
 
 function truncate(value: string) {
-  if (value.length <= DESCRIPTION_MAX_LENGTH) {
+  const characters = Array.from(value);
+  if (characters.length <= DESCRIPTION_MAX_LENGTH) {
     return value;
   }
-  return `${value.slice(0, DESCRIPTION_MAX_LENGTH)}…`;
+  return `${characters.slice(0, DESCRIPTION_MAX_LENGTH).join("")}…`;
 }
 
 export function SearchPanelClient({ recommended }: SearchPanelClientProps) {

@@ -16,7 +16,13 @@ export function ContentCard({
   className,
   highlightInsight = false,
 }: ContentCardProps) {
-  const { slug, title, summary, updatedAt, tags, insight } = content;
+  const { slug, title, updatedAt, tags, description } = content;
+
+  const descriptionParagraph = description ? (
+    <p className="text-sm leading-relaxed text-muted-foreground">
+      {description}
+    </p>
+  ) : null;
 
   return (
     <Link
@@ -35,15 +41,11 @@ export function ContentCard({
           <h3 className="text-lg font-semibold tracking-tight text-foreground">
             <span className="transition group-hover:text-primary">{title}</span>
           </h3>
-          {summary ? (
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {summary}
-            </p>
-          ) : null}
+          {highlightInsight ? null : descriptionParagraph}
         </div>
-        {highlightInsight && insight ? (
+        {highlightInsight && description ? (
           <div className="rounded-md border border-primary/40 bg-primary/5 p-4 text-sm leading-relaxed text-primary">
-            {insight}
+            {description}
           </div>
         ) : null}
         {tags.length > 0 ? (

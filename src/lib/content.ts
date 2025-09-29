@@ -6,6 +6,7 @@ import { cache } from "react";
 import { z } from "zod";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content", "notes");
+const DESCRIPTION_MAX_LENGTH = 160;
 
 const FrontMatterSchema = z
   .object({
@@ -16,21 +17,16 @@ const FrontMatterSchema = z
     publisher: z.string().optional().default(""),
     publishedAt: z.string(),
     updatedAt: z.string(),
-    summary: z.string(),
     tags: z.array(z.string()).default([]),
     status: z.enum(["published", "draft"]).default("draft"),
-    pinned: z.boolean().default(false),
-    pinOrder: z.number().default(0),
-    insight: z.string().optional(),
-    playbook: z.array(z.string()).default([]),
   })
-  .passthrough();
+  .loose();
 
 const INTERNAL_LINK_PATTERN = /\[\[([^\]]+)\]\]/g;
 
 export type ContentStatus = "published" | "draft";
 
-export interface ContentMeta {
+export type ContentMeta = {
   slug: string;
   title: string;
   bookTitle: string;
@@ -38,17 +34,13 @@ export interface ContentMeta {
   publisher: string;
   publishedAt: string;
   updatedAt: string;
-  summary: string;
   tags: string[];
   status: ContentStatus;
-  pinned: boolean;
-  pinOrder: number;
-  insight?: string;
-  playbook: string[];
   outboundReferences: string[];
   unresolvedReferences: string[];
   filePath: string;
-}
+  description: string;
+};
 
 export interface ContentDetail extends ContentMeta {
   body: string;
@@ -57,7 +49,31 @@ export interface ContentDetail extends ContentMeta {
 interface RawContent {
   meta: ContentMeta;
   body: string;
+  plainText: string;
   referenceLabels: string[];
+}
+
+function toPlainText(value: string) {
+  return value
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(INTERNAL_LINK_PATTERN, "$1")
+    .replace(/^[\s>*-]+/gm, " ")
+    .replace(/[#*_~=]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function createDescriptionFromPlainText(plainText: string) {
+  if (plainText.length === 0) {
+    return "";
+  }
+  const characters = Array.from(plainText);
+  if (characters.length <= DESCRIPTION_MAX_LENGTH) {
+    return plainText;
+  }
+  return `${characters.slice(0, DESCRIPTION_MAX_LENGTH).join("")}…`;
 }
 
 async function ensureContentDirectory() {
@@ -106,6 +122,8 @@ async function readRawContent(fileName: string): Promise<RawContent> {
       ),
     ),
   );
+  const plainText = toPlainText(content);
+  const description = createDescriptionFromPlainText(plainText);
 
   const meta: ContentMeta = {
     slug: frontMatter.slug,
@@ -115,19 +133,20 @@ async function readRawContent(fileName: string): Promise<RawContent> {
     publisher: frontMatter.publisher,
     publishedAt,
     updatedAt,
-    summary: frontMatter.summary,
     tags: frontMatter.tags,
     status: frontMatter.status,
-    pinned: frontMatter.pinned,
-    pinOrder: frontMatter.pinOrder,
-    insight: frontMatter.insight,
-    playbook: frontMatter.playbook,
     outboundReferences: [],
     unresolvedReferences: referenceLabels,
     filePath,
+    description,
   };
 
-  return { meta, body: content, referenceLabels };
+  return {
+    meta,
+    body: content,
+    plainText,
+    referenceLabels,
+  };
 }
 
 const loadRawContents = cache(async () => {
@@ -176,14 +195,6 @@ function resolveReferences(
 
 function sortByUpdatedAt(meta: ContentMeta[]) {
   return [...meta].sort((a, b) => {
-    if (a.pinned !== b.pinned) {
-      return Number(b.pinned) - Number(a.pinned);
-    }
-
-    if (a.pinned && b.pinned && a.pinOrder !== b.pinOrder) {
-      return a.pinOrder - b.pinOrder;
-    }
-
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
 }
@@ -203,13 +214,6 @@ export const getAllContentMeta = cache(async () => {
 export const getPublishedContentMeta = cache(async () => {
   const meta = await loadMeta();
   return sortByUpdatedAt(meta.filter((item) => item.status === "published"));
-});
-
-export const getPinnedContentMeta = cache(async () => {
-  const meta = await getPublishedContentMeta();
-  return meta
-    .filter((item) => item.pinned)
-    .sort((a, b) => a.pinOrder - b.pinOrder);
 });
 
 export const getLatestContentMeta = cache(async (limit = 12) => {
@@ -247,19 +251,11 @@ export const getSearchIndex = cache(async () => {
   const index = rawContents
     .filter((raw) => raw.meta.status === "published")
     .map((raw) => {
-      const plainText = raw.body
-        .replace(/```[\s\S]*?```/g, " ")
-        .replace(/`[^`]+`/g, " ")
-        .replace(/\[\[(.*?)\]\]/g, "$1")
-        .replace(/[#*_>-]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+      const plainText = raw.plainText;
 
       return {
         slug: raw.meta.slug,
         title: raw.meta.title,
-        summary: raw.meta.summary,
-        insight: raw.meta.insight ?? "",
         tags: raw.meta.tags,
         publishedAt: raw.meta.publishedAt,
         updatedAt: raw.meta.updatedAt,

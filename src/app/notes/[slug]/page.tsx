@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 
 import { Footer } from "@/components/footer";
 import { SiteHeader } from "@/components/site-header";
-import { Button } from "@/components/ui/button";
 import {
   getBacklinksForSlug,
   getContentBySlug,
@@ -33,12 +32,16 @@ export async function generateMetadata({
     };
   }
 
+  const description = target.description.trim().length
+    ? target.description
+    : "お金とコンピュータにものすごく興味がある人の読書ノートです。";
+
   return {
     title: `${target.title} | お金コンピュータ`,
-    description: target.summary,
+    description,
     openGraph: {
       title: target.title,
-      description: target.summary,
+      description,
     },
   };
 }
@@ -111,11 +114,6 @@ export default async function NoteDetailPage({
                   更新: {formatDate(detail.updatedAt)}
                 </span>
               </div>
-              {detail.summary ? (
-                <p className="max-w-3xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  {detail.summary}
-                </p>
-              ) : null}
               <div className="flex flex-wrap gap-2">
                 {detail.tags.map((tag) => (
                   <Link
@@ -127,39 +125,6 @@ export default async function NoteDetailPage({
                   </Link>
                 ))}
               </div>
-            </div>
-
-            <div className="space-y-6 rounded-xl border border-border bg-card/50 p-6">
-              <div>
-                <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-                  洞察 Insight
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-foreground">
-                  {detail.insight ?? "洞察は未登録です"}
-                </p>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-                  Playbook Steps
-                </h3>
-                <ol className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
-                  {detail.playbook.length > 0 ? (
-                    detail.playbook.map((step, index) => (
-                      <li key={step} className="flex gap-3">
-                        <span className="text-xs font-semibold text-foreground">
-                          {index + 1}
-                        </span>
-                        <span>{step}</span>
-                      </li>
-                    ))
-                  ) : (
-                    <li>Playbookは準備中です。</li>
-                  )}
-                </ol>
-              </div>
-              <Button asChild variant="outline" size="sm">
-                <Link href="#note-body">本文へジャンプ</Link>
-              </Button>
             </div>
           </div>
         </section>

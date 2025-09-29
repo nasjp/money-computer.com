@@ -50,9 +50,9 @@ export default async function Home() {
                       {latest.title}
                     </span>
                   </h2>
-                  {latest.insight ? (
+                  {latest.description ? (
                     <p className="text-sm leading-relaxed text-muted-foreground transition group-hover:text-muted-foreground/80">
-                      {latest.insight}
+                      {latest.description}
                     </p>
                   ) : null}
                 </div>

@@ -4,7 +4,14 @@ import { SearchPanel } from "@/components/search-panel";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
-  title: "検索 | お金コンピュータ",
+  title: "検索",
+  description:
+    "公開中の読書ノート全文をインデックス化し、キーワードで横断検索できます。",
+  openGraph: {
+    title: "検索",
+    description:
+      "公開中の読書ノート全文をインデックス化し、キーワードで横断検索できます。",
+  },
 };
 
 export default function SearchPage() {

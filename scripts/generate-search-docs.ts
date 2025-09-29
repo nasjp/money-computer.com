@@ -11,6 +11,8 @@ interface GeneratedDocument {
   content: string;
 }
 
+const SUMMARY_MAX_LENGTH = 160;
+
 const CONTENT_ROOT = path.join(process.cwd(), "content", "notes");
 const OUTPUT_PATH = path.join(
   process.cwd(),
@@ -41,7 +43,32 @@ function normalizeWhitespace(value: string): string {
     .join("\n");
 }
 
-async function buildDocument(fileName: string): Promise<GeneratedDocument | null> {
+function toPlainText(value: string): string {
+  return value
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(/\[\[([^\]]+)\]\]/g, "$1")
+    .replace(/^[\s>*-]+/gm, " ")
+    .replace(/[#*_~=]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function createSummary(value: string): string {
+  if (value.length === 0) {
+    return "";
+  }
+  const characters = Array.from(value);
+  if (characters.length <= SUMMARY_MAX_LENGTH) {
+    return value;
+  }
+  return `${characters.slice(0, SUMMARY_MAX_LENGTH).join("")}…`;
+}
+
+async function buildDocument(
+  fileName: string,
+): Promise<GeneratedDocument | null> {
   const filePath = path.join(CONTENT_ROOT, fileName);
   const file = await fs.readFile(filePath, "utf8");
   const { data, content } = matter(file);
@@ -50,15 +77,18 @@ async function buildDocument(fileName: string): Promise<GeneratedDocument | null
     return null;
   }
 
-  const slug = typeof data.slug === "string" && data.slug.length > 0
-    ? data.slug
-    : fileName.replace(/\.mdx$/, "");
+  const slug =
+    typeof data.slug === "string" && data.slug.length > 0
+      ? data.slug
+      : fileName.replace(/\.mdx$/, "");
   const title = typeof data.title === "string" ? data.title : slug;
-  const summary = typeof data.summary === "string" ? data.summary : "";
 
-  const segments = [title, summary, content ?? ""]
+  const segments = [title, content ?? ""]
     .map((segment) => segment.trim())
     .filter(Boolean);
+
+  const plainText = toPlainText(content ?? "");
+  const summary = createSummary(plainText);
 
   return {
     slug,
