@@ -5,26 +5,13 @@ import { ContentCard } from "@/components/content-card";
 import { Footer } from "@/components/footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import {
-  type ContentMeta,
-  getPinnedContentMeta,
-  getPublishedContentMeta,
-} from "@/lib/content";
+import { getPublishedContentMeta } from "@/lib/content";
 import { formatDate } from "@/lib/date";
 
-function splitFeed(meta: ContentMeta[], pinned: ContentMeta[]) {
-  const pinnedSlugs = new Set(pinned.map((item) => item.slug));
-  return meta.filter((item) => !pinnedSlugs.has(item.slug));
-}
-
 export default async function Home() {
-  const [pinned, published] = await Promise.all([
-    getPinnedContentMeta(),
-    getPublishedContentMeta(),
-  ]);
-
-  const feed = splitFeed(published, pinned);
-  const latest = feed[0] ?? pinned[0];
+  const published = await getPublishedContentMeta();
+  const latest = published[0];
+  const feed = latest ? published.slice(1, 4) : published.slice(0, 3);
 
   return (
     <main className="min-h-screen bg-background">
@@ -86,33 +73,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-b border-border/60 bg-background">
-        <div className="container mx-auto px-6 py-16">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                ピン留めされた洞察
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                戦略・顧客理解・価格設計など、レバーに直結する基本ノート。
-              </p>
-            </div>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/contents">一覧へ</Link>
-            </Button>
-          </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {pinned.map((content) => (
-              <ContentCard
-                key={content.slug}
-                content={content}
-                highlightInsight
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="bg-background">
         <div className="container mx-auto px-6 py-16">
           <div className="flex items-center justify-between gap-4">
@@ -121,7 +81,7 @@ export default async function Home() {
                 最新フィード
               </h2>
               <p className="text-sm text-muted-foreground">
-                更新順で公開ノートを表示。ピン留め以外のアップデートはこちらから。
+                更新順で公開ノートを最大3件まで表示します。
               </p>
             </div>
           </div>

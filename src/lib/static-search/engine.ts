@@ -46,6 +46,69 @@ export async function createStaticSearchEngine(
 
   const tokenizer = builder.build() as unknown as LinderaTokenizer;
 
+  const toTokenStrings = (tokenMaps: TokenMap[]): string[] => {
+    const tokens: string[] = [];
+    for (const token of tokenMaps) {
+      const value = token.get("text");
+      if (typeof value !== "string") {
+        continue;
+      }
+      const sanitized = value.trim();
+      if (sanitized.length === 0) {
+        continue;
+      }
+      tokens.push(sanitized);
+    }
+    return tokens;
+  };
+
+  const fallbackSegmenter =
+    typeof Intl !== "undefined" && "Segmenter" in Intl
+      ? new Intl.Segmenter("ja", { granularity: "word" })
+      : null;
+
+  const fallbackTokenize = (value: string): string[] => {
+    if (fallbackSegmenter) {
+      const segments: string[] = [];
+      for (const item of fallbackSegmenter.segment(value)) {
+        const text = item.segment.trim();
+        if (text.length === 0) {
+          continue;
+        }
+        if ("isWordLike" in item && item.isWordLike === false) {
+          continue;
+        }
+        segments.push(text);
+      }
+      if (segments.length > 0) {
+        return segments;
+      }
+    }
+
+    return value
+      .split(/\s+/)
+      .map((part) => part.trim())
+      .filter((part) => part.length > 0);
+  };
+
+  let tokenizerErrorLogged = false;
+
+  const tokenizeInput = (value: string): string[] => {
+    try {
+      return toTokenStrings(tokenizer.tokenize(value) as unknown as TokenMap[]);
+    } catch (cause) {
+      if (!tokenizerErrorLogged) {
+        console.error(
+          "静的検索: Linderaの形態素解析に失敗したためフォールバックを使用します。",
+          cause,
+        );
+        tokenizerErrorLogged = true;
+      }
+      const fallbackTokens = fallbackTokenize(value);
+      return fallbackTokens;
+    }
+  };
+
   reportStatus?.("DuckDBを初期化しています...");
 
   const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
@@ -70,14 +133,7 @@ export async function createStaticSearchEngine(
   );
 
   for (const doc of DOCS) {
-    const tokens = tokenizer
-      .tokenize(doc.content)
-      .map((token: TokenMap) => token.get("text"))
-      .filter(
-        (value): value is string =>
-          typeof value === "string" && value.length > 0,
-      )
-      .join(" ");
+    const tokens = tokenizeInput(doc.content).join(" ");
 
     const statement = await connection.prepare(
       "INSERT INTO sora_doc (slug, title, summary, content, content_t) VALUES (?, ?, ?, ?, ?)",
@@ -120,14 +176,12 @@ export async function createStaticSearchEngine(
       return [];
     }
 
-    const tokens = tokenizer
-      .tokenize(trimmed)
-      .map((token: TokenMap) => token.get("text"))
-      .filter(
-        (value): value is string =>
-          typeof value === "string" && value.length > 0,
-      )
-      .join(" ");
+    const tokenStrings = tokenizeInput(trimmed);
+    if (tokenStrings.length === 0) {
+      return [];
+    }
+
+    const tokens = tokenStrings.join(" ");
 
     if (tokens.length === 0) {
       return [];
