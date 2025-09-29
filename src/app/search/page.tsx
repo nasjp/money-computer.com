@@ -18,7 +18,7 @@ export default function SearchPage() {
   return (
     <main className="flex min-h-screen flex-col bg-background">
       <SiteHeader activeNav="search" />
-      <section className="border-b border-border bg-accent/20">
+      <section className="border-border bg-accent/20">
         <div className="container mx-auto px-6 py-16">
           <div className="space-y-4 text-balance">
             <span className="text-xs uppercase tracking-[0.28em] text-muted-foreground">

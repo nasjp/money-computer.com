@@ -17,12 +17,13 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ activeNav }: SiteHeaderProps) {
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <div className="container mx-auto px-6">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link
-              href="/"
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background overscroll-y-none">
+        <div className="container mx-auto px-6">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center gap-8">
+              <Link
+                href="/"
               className="text-sm font-semibold uppercase tracking-[0.24em]"
             >
               お金コンピュータ
@@ -74,8 +75,10 @@ export function SiteHeader({ activeNav }: SiteHeaderProps) {
               </nav>
             </div>
           </details>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <div className="h-16" aria-hidden />
+    </>
   );
 }

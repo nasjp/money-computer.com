@@ -1,7 +1,7 @@
 import { SearchPanelClient } from "@/components/search-panel-client";
 import { getPublishedContentMeta } from "@/lib/content";
 
-const RECOMMENDED_RESULT_LIMIT = 8;
+const RECOMMENDED_RESULT_LIMIT = 6;
 
 export async function SearchPanel() {
   const allContent = await getPublishedContentMeta();

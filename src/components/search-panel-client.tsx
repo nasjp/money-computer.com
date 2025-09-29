@@ -12,6 +12,8 @@ type SearchPanelClientProps = {
   allContent: ContentMeta[];
 };
 
+const DISPLAY_LIMIT = 6;
+
 export function SearchPanelClient({
   recommended,
   allContent,
@@ -34,12 +36,16 @@ export function SearchPanelClient({
   }, []);
 
   useEffect(() => {
+    if (initializing) {
+      return;
+    }
+
     const handle = setTimeout(() => {
       void executeSearch(query);
     }, 200);
 
     return () => clearTimeout(handle);
-  }, [query, executeSearch]);
+  }, [query, executeSearch, initializing]);
 
   const hasQuery = query.trim().length > 0;
 
@@ -53,7 +59,7 @@ export function SearchPanelClient({
 
   const displayContent: ContentMeta[] = useMemo(() => {
     if (!hasQuery) {
-      return recommended;
+      return recommended.slice(0, DISPLAY_LIMIT);
     }
 
     const found: ContentMeta[] = [];
@@ -63,7 +69,7 @@ export function SearchPanelClient({
         found.push(meta);
       }
     }
-    return found;
+    return found.slice(0, DISPLAY_LIMIT);
   }, [hasQuery, recommended, results, metaBySlug]);
 
   const placeholder = useMemo(
@@ -77,7 +83,7 @@ export function SearchPanelClient({
       return null;
     }
     if (!hasQuery) {
-      return `最近更新されたノートを ${recommended.length} 件表示しています。`;
+      return `最近更新されたノートを ${displayContent.length} 件表示しています。`;
     }
     if (isSearching) {
       return "検索中...";
@@ -85,15 +91,8 @@ export function SearchPanelClient({
     if (statusMessage) {
       return null;
     }
-    return `${results.length}件ヒット`;
-  }, [
-    error,
-    hasQuery,
-    isSearching,
-    recommended.length,
-    results.length,
-    statusMessage,
-  ]);
+    return `${displayContent.length}件ヒット`;
+  }, [error, hasQuery, isSearching, statusMessage, displayContent.length]);
 
   const showEmptyState =
     hasQuery &&
@@ -104,7 +103,7 @@ export function SearchPanelClient({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 rounded-xl border border-border/80 bg-card/40 px-6 py-8 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-lg border border-border/80 bg-card/40 px-6 py-8">
         <label
           htmlFor="search-query"
           className="flex items-center gap-3 text-sm font-medium text-muted-foreground"
@@ -118,7 +117,8 @@ export function SearchPanelClient({
           value={query}
           onChange={(event) => setQuery(event.currentTarget.value)}
           placeholder={placeholder}
-          className="w-full rounded-md border border-border/70 bg-background px-4 py-3 text-base text-foreground outline-none transition focus:border-primary"
+          className="w-full rounded-md border border-border/70 bg-background px-4 py-3 text-base text-foreground outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={initializing}
           aria-label="ノート検索"
         />
         {statusMessage ? (
