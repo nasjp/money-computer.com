@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "predev": "pnpm run generate:search-docs",
     "build": "next build",
+    "prebuild": "pnpm run generate:search-docs",
+    "generate:search-docs": "pnpm dlx tsx scripts/generate-search-docs.ts",
     "start": "next start",
     "lint": "biome check --write src"
   },
   "dependencies": {
+    "@duckdb/duckdb-wasm": "1.30.0",
+    "lindera-wasm-ipadic": "1.0.0",
     "@hookform/resolvers": "^5.2.2",
     "@next/mdx": "^15.5.4",
     "@radix-ui/react-accordion": "1.2.12",

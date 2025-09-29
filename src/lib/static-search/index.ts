@@ -1,3 +1,3 @@
-export { DEFAULT_QUERY } from './constants'
-export { useStaticSearch } from './useStaticSearch'
-export type { SearchResult } from './types'
+export { DEFAULT_QUERY } from "./constants";
+export type { SearchResult } from "./types";
+export { useStaticSearch } from "./useStaticSearch";

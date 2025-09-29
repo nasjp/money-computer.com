@@ -1,8 +1,11 @@
-import * as duckdb from "@duckdb/duckdb-wasm";
+import type * as duckdb from "@duckdb/duckdb-wasm";
+
+import docsData from "./docs.generated.json";
+import type { SearchDocument } from "./types";
 
 export const DEFAULT_QUERY = "";
 
-export const DOCS: readonly string[] = [];
+export const DOCS = docsData as ReadonlyArray<SearchDocument>;
 
 export const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
   mvp: {

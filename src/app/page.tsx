@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import { ContentCard } from "@/components/content-card";
@@ -45,38 +46,42 @@ export default async function Home() {
               <Button asChild size="lg">
                 <Link href="/contents">全コンテンツを見る</Link>
               </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link href={`/contents/${latest?.slug ?? ""}`}>
-                  最新ノートへ移動
-                </Link>
-              </Button>
             </div>
           </div>
           {latest ? (
-            <div className="rounded-xl border border-border bg-card/50 p-6">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>最近更新</span>
-                <span>{formatDate(latest.updatedAt)}</span>
-              </div>
-              <h2 className="mt-3 text-lg font-semibold text-foreground">
-                {latest.title}
-              </h2>
-              {latest.insight ? (
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  {latest.insight}
-                </p>
-              ) : null}
-              <div className="mt-6 flex flex-wrap gap-2">
-                {latest.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-border/80 px-3 py-1 text-xs text-muted-foreground"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <Link
+              href={`/contents/${latest.slug}`}
+              className="group block rounded-lg border border-border/80 bg-card/40 p-6 transition hover:border-foreground/40 hover:bg-card"
+            >
+              <article className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{formatDate(latest.updatedAt)}</span>
+                    <ArrowUpRight className="size-4 text-muted-foreground transition group-hover:text-foreground" />
+                  </div>
+                  <h2 className="text-lg font-semibold tracking-tight text-foreground">
+                    <span className="transition group-hover:text-primary">{latest.title}</span>
+                  </h2>
+                  {latest.insight ? (
+                    <p className="text-sm leading-relaxed text-muted-foreground transition group-hover:text-muted-foreground/80">
+                      {latest.insight}
+                    </p>
+                  ) : null}
+                </div>
+                {latest.tags.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {latest.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-border/80 px-3 py-1 text-xs text-muted-foreground transition group-hover:border-foreground/50 group-hover:text-foreground"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </article>
+            </Link>
           ) : null}
         </div>
       </section>
