@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-import { ContentCard } from "@/components/content-card";
 import { Footer } from "@/components/footer";
+import { NoteCard } from "@/components/note-card";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import { getPublishedContentMeta } from "@/lib/content";
+import { getPublishedNoteMeta } from "@/lib/note";
 
 export const metadata: Metadata = {
   title: "ノート",
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   },
 };
 
-function getAllTags(meta: Awaited<ReturnType<typeof getPublishedContentMeta>>) {
+function getAllTags(meta: Awaited<ReturnType<typeof getPublishedNoteMeta>>) {
   const map = new Map<string, number>();
   for (const item of meta) {
     for (const tag of item.tags) {
@@ -61,7 +60,7 @@ function buildFilterHref(selected: string[], tag: string) {
 }
 
 function filterByTags(
-  meta: Awaited<ReturnType<typeof getPublishedContentMeta>>,
+  meta: Awaited<ReturnType<typeof getPublishedNoteMeta>>,
   tags: string[],
 ) {
   if (tags.length === 0) {
@@ -79,7 +78,7 @@ export default async function NotesPage({
   }>;
 }) {
   const resolvedSearchParams = await searchParams;
-  const meta = await getPublishedContentMeta();
+  const meta = await getPublishedNoteMeta();
   const allTags = getAllTags(meta);
   const tagFilter = parseTagFilter(resolvedSearchParams?.tag);
   const filtered = filterByTags(meta, tagFilter);
@@ -141,8 +140,8 @@ export default async function NotesPage({
       <section className="bg-background">
         <div className="container mx-auto px-6 py-16">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((content) => (
-              <ContentCard key={content.slug} content={content} />
+            {filtered.map((note) => (
+              <NoteCard key={note.slug} note={note} />
             ))}
           </div>
         </div>

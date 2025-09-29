@@ -3,20 +3,20 @@
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
-import { ContentCard } from "@/components/content-card";
-import type { ContentMeta } from "@/lib/content";
+import { NoteCard } from "@/components/note-card";
+import type { NoteMeta } from "@/lib/note";
 import { useStaticSearch } from "@/lib/static-search";
 
 type SearchPanelClientProps = {
-  recommended: ContentMeta[];
-  allContent: ContentMeta[];
+  recommended: NoteMeta[];
+  allNotes: NoteMeta[];
 };
 
 const DISPLAY_LIMIT = 6;
 
 export function SearchPanelClient({
   recommended,
-  allContent,
+  allNotes,
 }: SearchPanelClientProps) {
   const {
     query,
@@ -50,19 +50,19 @@ export function SearchPanelClient({
   const hasQuery = query.trim().length > 0;
 
   const metaBySlug = useMemo(() => {
-    const map = new Map<string, ContentMeta>();
-    for (const item of allContent) {
+    const map = new Map<string, NoteMeta>();
+    for (const item of allNotes) {
       map.set(item.slug, item);
     }
     return map;
-  }, [allContent]);
+  }, [allNotes]);
 
-  const displayContent: ContentMeta[] = useMemo(() => {
+  const displayNotes: NoteMeta[] = useMemo(() => {
     if (!hasQuery) {
       return recommended.slice(0, DISPLAY_LIMIT);
     }
 
-    const found: ContentMeta[] = [];
+    const found: NoteMeta[] = [];
     for (const result of results) {
       const meta = metaBySlug.get(result.slug);
       if (meta && !found.some((item) => item.slug === meta.slug)) {
@@ -83,7 +83,7 @@ export function SearchPanelClient({
       return null;
     }
     if (!hasQuery) {
-      return `最近更新されたノートを ${displayContent.length} 件表示しています。`;
+      return `最近更新されたノートを ${displayNotes.length} 件表示しています。`;
     }
     if (isSearching) {
       return null;
@@ -92,14 +92,14 @@ export function SearchPanelClient({
       return null;
     }
     return null;
-  }, [error, hasQuery, isSearching, statusMessage, displayContent.length]);
+  }, [error, hasQuery, isSearching, statusMessage, displayNotes.length]);
 
   const showEmptyState =
     hasQuery &&
     !isSearching &&
     !statusMessage &&
     !error &&
-    displayContent.length === 0;
+    displayNotes.length === 0;
 
   return (
     <div className="space-y-8">
@@ -136,8 +136,8 @@ export function SearchPanelClient({
           </p>
         ) : null}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {displayContent.map((item) => (
-            <ContentCard key={item.slug} content={item} />
+          {displayNotes.map((item) => (
+            <NoteCard key={item.slug} note={item} />
           ))}
         </div>
       </div>

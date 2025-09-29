@@ -19,7 +19,7 @@ type SearchRow = {
   slug: string;
   title: string;
   summary: string;
-  content: string;
+  note: string;
 };
 
 export async function createStaticSearchEngine(
@@ -128,14 +128,14 @@ export async function createStaticSearchEngine(
   await connection.query("INSTALL fts;");
   await connection.query("CREATE SEQUENCE IF NOT EXISTS id_sequence START 1;");
   await connection.query(
-    "CREATE TABLE sora_doc (id INTEGER DEFAULT nextval('id_sequence') PRIMARY KEY, slug VARCHAR, title VARCHAR, summary VARCHAR, content VARCHAR, content_t VARCHAR);",
+    "CREATE TABLE sora_doc (id INTEGER DEFAULT nextval('id_sequence') PRIMARY KEY, slug VARCHAR, title VARCHAR, summary VARCHAR, note VARCHAR, note_t VARCHAR);",
   );
 
   for (const doc of DOCS) {
-    const tokens = tokenizeInput(doc.content).join(" ");
+    const tokens = tokenizeInput(doc.note).join(" ");
 
     const statement = await connection.prepare(
-      "INSERT INTO sora_doc (slug, title, summary, content, content_t) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO sora_doc (slug, title, summary, note, note_t) VALUES (?, ?, ?, ?, ?)",
     );
 
     try {
@@ -143,7 +143,7 @@ export async function createStaticSearchEngine(
         doc.slug,
         doc.title,
         doc.summary ?? "",
-        doc.content,
+        doc.note,
         tokens,
       );
     } finally {
@@ -152,7 +152,7 @@ export async function createStaticSearchEngine(
   }
 
   await connection.query(
-    "PRAGMA create_fts_index(sora_doc, id, content_t, stemmer = 'none', stopwords = 'none', ignore = '', lower = false, strip_accents = false);",
+    "PRAGMA create_fts_index(sora_doc, id, note_t, stemmer = 'none', stopwords = 'none', ignore = '', lower = false, strip_accents = false);",
   );
 
   const versions: StaticSearchVersions = {
@@ -187,7 +187,7 @@ export async function createStaticSearchEngine(
     }
 
     const statement = await connection.prepare(
-      "SELECT id, fts_main_sora_doc.match_bm25(id, ?) AS score, slug, title, summary, content FROM sora_doc WHERE score IS NOT NULL ORDER BY score DESC",
+      "SELECT id, fts_main_sora_doc.match_bm25(id, ?) AS score, slug, title, summary, note FROM sora_doc WHERE score IS NOT NULL ORDER BY score DESC",
     );
 
     try {
@@ -200,7 +200,7 @@ export async function createStaticSearchEngine(
         slug: row.slug,
         title: row.title,
         summary: row.summary,
-        content: row.content,
+        note: row.note,
       }));
     } finally {
       await statement.close();

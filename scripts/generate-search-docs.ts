@@ -8,12 +8,12 @@ type GeneratedDocument = {
   slug: string;
   title: string;
   summary: string;
-  content: string;
+  note: string;
 };
 
 const SUMMARY_MAX_LENGTH = 160;
 
-const CONTENT_ROOT = path.join(process.cwd(), "content", "notes");
+const NOTE_ROOT = path.join(process.cwd(), "notes");
 const OUTPUT_PATH = path.join(
   process.cwd(),
   "src",
@@ -22,12 +22,12 @@ const OUTPUT_PATH = path.join(
   "docs.generated.json",
 );
 
-async function ensureContentDirectory(): Promise<void> {
-  await fs.mkdir(CONTENT_ROOT, { recursive: true });
+async function ensureNoteDirectory(): Promise<void> {
+  await fs.mkdir(NOTE_ROOT, { recursive: true });
 }
 
 async function loadMdxFiles(): Promise<string[]> {
-  const entries = await fs.readdir(CONTENT_ROOT, { withFileTypes: true });
+  const entries = await fs.readdir(NOTE_ROOT, { withFileTypes: true });
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
     .map((entry) => entry.name)
@@ -69,9 +69,9 @@ function createSummary(value: string): string {
 async function buildDocument(
   fileName: string,
 ): Promise<GeneratedDocument | null> {
-  const filePath = path.join(CONTENT_ROOT, fileName);
+  const filePath = path.join(NOTE_ROOT, fileName);
   const file = await fs.readFile(filePath, "utf8");
-  const { data, content } = matter(file);
+  const { data, content: markdown } = matter(file);
 
   if (!data || data.status === "draft") {
     return null;
@@ -83,23 +83,23 @@ async function buildDocument(
       : fileName.replace(/\.mdx$/, "");
   const title = typeof data.title === "string" ? data.title : slug;
 
-  const segments = [title, content ?? ""]
+  const segments = [title, markdown ?? ""]
     .map((segment) => segment.trim())
     .filter(Boolean);
 
-  const plainText = toPlainText(content ?? "");
+  const plainText = toPlainText(markdown ?? "");
   const summary = createSummary(plainText);
 
   return {
     slug,
     title,
     summary,
-    content: normalizeWhitespace(segments.join("\n\n")),
+    note: normalizeWhitespace(segments.join("\n\n")),
   };
 }
 
 async function main(): Promise<void> {
-  await ensureContentDirectory();
+  await ensureNoteDirectory();
   const mdxFiles = await loadMdxFiles();
 
   const docs: GeneratedDocument[] = [];

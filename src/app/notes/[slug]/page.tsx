@@ -4,16 +4,16 @@ import { notFound } from "next/navigation";
 
 import { Footer } from "@/components/footer";
 import { SiteHeader } from "@/components/site-header";
-import {
-  getBacklinksForSlug,
-  getContentBySlug,
-  getPublishedContentMeta,
-} from "@/lib/content";
 import { formatDate } from "@/lib/date";
 import { renderMarkdownToReact } from "@/lib/markdown";
+import {
+  getBacklinksForSlug,
+  getNoteBySlug,
+  getPublishedNoteMeta,
+} from "@/lib/note";
 
 export async function generateStaticParams() {
-  const meta = await getPublishedContentMeta();
+  const meta = await getPublishedNoteMeta();
   return meta.map(({ slug }) => ({ slug }));
 }
 
@@ -23,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const meta = await getPublishedContentMeta();
+  const meta = await getPublishedNoteMeta();
   const target = meta.find((item) => item.slug === slug);
 
   if (!target) {
@@ -52,7 +52,7 @@ export default async function NoteDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const meta = await getPublishedContentMeta();
+  const meta = await getPublishedNoteMeta();
   const target = meta.find((item) => item.slug === slug);
 
   if (!target) {
@@ -60,7 +60,7 @@ export default async function NoteDetailPage({
   }
 
   const [detail, backlinks] = await Promise.all([
-    getContentBySlug(slug),
+    getNoteBySlug(slug),
     getBacklinksForSlug(slug),
   ]);
 
@@ -78,7 +78,7 @@ export default async function NoteDetailPage({
     referenceLookup[item.bookTitle.toLowerCase()] = item.slug;
   }
 
-  const markdownContent = await renderMarkdownToReact(
+  const renderedNote = await renderMarkdownToReact(
     detail.body,
     referenceLookup,
   );
@@ -131,9 +131,7 @@ export default async function NoteDetailPage({
 
         <section id="note-body" className="bg-background">
           <div className="container mx-auto grid gap-12 px-6 py-16 lg:grid-cols-[3fr_2fr]">
-            <div className="prose prose-neutral max-w-none">
-              {markdownContent}
-            </div>
+            <div className="prose prose-neutral max-w-none">{renderedNote}</div>
             <aside className="space-y-10">
               <div className="rounded-xl border border-border/80 bg-card/40 p-6">
                 <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">

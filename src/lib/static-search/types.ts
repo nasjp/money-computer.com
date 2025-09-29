@@ -4,14 +4,14 @@ export type SearchResult = {
   slug: string;
   title: string;
   summary: string;
-  content: string;
+  note: string;
 };
 
 export type SearchDocument = {
   slug: string;
   title: string;
   summary: string;
-  content: string;
+  note: string;
 };
 
 export type TokenMap = Map<string, string>;

@@ -1,22 +1,21 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-
-import type { ContentMeta } from "@/lib/content";
 import { formatDate } from "@/lib/date";
+import type { NoteMeta } from "@/lib/note";
 import { cn } from "@/lib/utils";
 
-type ContentCardProps = {
-  content: ContentMeta;
+type NoteCardProps = {
+  note: NoteMeta;
   className?: string;
   highlightInsight?: boolean;
 };
 
-export function ContentCard({
-  content,
+export function NoteCard({
+  note,
   className,
   highlightInsight = false,
-}: ContentCardProps) {
-  const { slug, title, updatedAt, tags, description } = content;
+}: NoteCardProps) {
+  const { slug, title, updatedAt, tags, description } = note;
 
   const descriptionParagraph = description ? (
     <p className="text-sm leading-relaxed text-muted-foreground">

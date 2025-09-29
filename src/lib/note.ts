@@ -5,7 +5,7 @@ import matter from "gray-matter";
 import { cache } from "react";
 import { z } from "zod";
 
-const CONTENT_ROOT = path.join(process.cwd(), "content", "notes");
+const NOTE_ROOT = path.join(process.cwd(), "notes");
 const DESCRIPTION_MAX_LENGTH = 160;
 
 const FrontMatterSchema = z
@@ -24,9 +24,9 @@ const FrontMatterSchema = z
 
 const INTERNAL_LINK_PATTERN = /\[\[([^\]]+)\]\]/g;
 
-export type ContentStatus = "published" | "draft";
+export type NoteStatus = "published" | "draft";
 
-export type ContentMeta = {
+export type NoteMeta = {
   slug: string;
   title: string;
   bookTitle: string;
@@ -35,19 +35,19 @@ export type ContentMeta = {
   publishedAt: string;
   updatedAt: string;
   tags: string[];
-  status: ContentStatus;
+  status: NoteStatus;
   outboundReferences: string[];
   unresolvedReferences: string[];
   filePath: string;
   description: string;
 };
 
-export type ContentDetail = ContentMeta & {
+export type NoteDetail = NoteMeta & {
   body: string;
 };
 
-type RawContent = {
-  meta: ContentMeta;
+type RawNote = {
+  meta: NoteMeta;
   body: string;
   plainText: string;
   referenceLabels: string[];
@@ -76,8 +76,8 @@ function createDescriptionFromPlainText(plainText: string) {
   return `${characters.slice(0, DESCRIPTION_MAX_LENGTH).join("")}…`;
 }
 
-async function ensureContentDirectory() {
-  await fs.mkdir(CONTENT_ROOT, { recursive: true });
+async function ensureNoteDirectory() {
+  await fs.mkdir(NOTE_ROOT, { recursive: true });
 }
 
 function parseDateString(value: string, filePath: string, field: string) {
@@ -90,8 +90,8 @@ function parseDateString(value: string, filePath: string, field: string) {
   return value;
 }
 
-async function readRawContent(fileName: string): Promise<RawContent> {
-  const filePath = path.join(CONTENT_ROOT, fileName);
+async function readRawNote(fileName: string): Promise<RawNote> {
+  const filePath = path.join(NOTE_ROOT, fileName);
   const file = await fs.readFile(filePath, "utf-8");
   const { data, content } = matter(file);
   const parsed = FrontMatterSchema.safeParse(data);
@@ -125,7 +125,7 @@ async function readRawContent(fileName: string): Promise<RawContent> {
   const plainText = toPlainText(content);
   const description = createDescriptionFromPlainText(plainText);
 
-  const meta: ContentMeta = {
+  const meta: NoteMeta = {
     slug: frontMatter.slug,
     title: frontMatter.title,
     bookTitle: frontMatter.bookTitle,
@@ -149,17 +149,17 @@ async function readRawContent(fileName: string): Promise<RawContent> {
   };
 }
 
-const loadRawContents = cache(async () => {
-  await ensureContentDirectory();
-  const entries = await fs.readdir(CONTENT_ROOT);
+const loadRawNotes = cache(async () => {
+  await ensureNoteDirectory();
+  const entries = await fs.readdir(NOTE_ROOT);
   const mdxFiles = entries.filter((entry) => entry.endsWith(".mdx"));
-  const contents = await Promise.all(mdxFiles.map(readRawContent));
-  return contents;
+  const notes = await Promise.all(mdxFiles.map(readRawNote));
+  return notes;
 });
 
-function buildReferenceMap(rawContents: RawContent[]) {
+function buildReferenceMap(rawNotes: RawNote[]) {
   const map = new Map<string, string>();
-  for (const raw of rawContents) {
+  for (const raw of rawNotes) {
     const { meta } = raw;
     map.set(meta.slug, meta.slug);
     map.set(meta.title, meta.slug);
@@ -171,10 +171,10 @@ function buildReferenceMap(rawContents: RawContent[]) {
 }
 
 function resolveReferences(
-  rawContents: RawContent[],
+  rawNotes: RawNote[],
   referenceMap: Map<string, string>,
 ) {
-  for (const raw of rawContents) {
+  for (const raw of rawNotes) {
     const resolved: string[] = [];
     const unresolved: string[] = [];
 
@@ -193,45 +193,45 @@ function resolveReferences(
   }
 }
 
-function sortByUpdatedAt(meta: ContentMeta[]) {
+function sortByUpdatedAt(meta: NoteMeta[]) {
   return [...meta].sort((a, b) => {
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
 }
 
 const loadMeta = cache(async () => {
-  const rawContents = await loadRawContents();
-  const referenceMap = buildReferenceMap(rawContents);
-  resolveReferences(rawContents, referenceMap);
-  return rawContents.map((raw) => raw.meta);
+  const rawNotes = await loadRawNotes();
+  const referenceMap = buildReferenceMap(rawNotes);
+  resolveReferences(rawNotes, referenceMap);
+  return rawNotes.map((raw) => raw.meta);
 });
 
-export const getAllContentMeta = cache(async () => {
+export const getAllNoteMeta = cache(async () => {
   const meta = await loadMeta();
   return sortByUpdatedAt(meta);
 });
 
-export const getPublishedContentMeta = cache(async () => {
+export const getPublishedNoteMeta = cache(async () => {
   const meta = await loadMeta();
   return sortByUpdatedAt(meta.filter((item) => item.status === "published"));
 });
 
-export const getLatestContentMeta = cache(async (limit = 12) => {
-  const meta = await getPublishedContentMeta();
+export const getLatestNoteMeta = cache(async (limit = 12) => {
+  const meta = await getPublishedNoteMeta();
   return meta.slice(0, limit);
 });
 
-export function buildBacklinks(meta: ContentMeta[], slug: string) {
+export function buildBacklinks(meta: NoteMeta[], slug: string) {
   return meta.filter((item) => item.outboundReferences.includes(slug));
 }
 
-export const getContentBySlug = cache(
-  async (slug: string): Promise<ContentDetail> => {
-    const rawContents = await loadRawContents();
-    const target = rawContents.find((raw) => raw.meta.slug === slug);
+export const getNoteBySlug = cache(
+  async (slug: string): Promise<NoteDetail> => {
+    const rawNotes = await loadRawNotes();
+    const target = rawNotes.find((raw) => raw.meta.slug === slug);
 
     if (!target) {
-      throw new Error(`Content not found for slug: ${slug}`);
+      throw new Error(`Note not found for slug: ${slug}`);
     }
 
     return {
@@ -242,13 +242,13 @@ export const getContentBySlug = cache(
 );
 
 export const getBacklinksForSlug = cache(async (slug: string) => {
-  const meta = await getPublishedContentMeta();
+  const meta = await getPublishedNoteMeta();
   return buildBacklinks(meta, slug);
 });
 
 export const getSearchIndex = cache(async () => {
-  const rawContents = await loadRawContents();
-  const index = rawContents
+  const rawNotes = await loadRawNotes();
+  const index = rawNotes
     .filter((raw) => raw.meta.status === "published")
     .map((raw) => {
       const plainText = raw.plainText;

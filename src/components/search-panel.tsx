@@ -1,13 +1,11 @@
 import { SearchPanelClient } from "@/components/search-panel-client";
-import { getPublishedContentMeta } from "@/lib/content";
+import { getPublishedNoteMeta } from "@/lib/note";
 
 const RECOMMENDED_RESULT_LIMIT = 6;
 
 export async function SearchPanel() {
-  const allContent = await getPublishedContentMeta();
-  const recommended = allContent.slice(0, RECOMMENDED_RESULT_LIMIT);
+  const allNotes = await getPublishedNoteMeta();
+  const recommended = allNotes.slice(0, RECOMMENDED_RESULT_LIMIT);
 
-  return (
-    <SearchPanelClient recommended={recommended} allContent={allContent} />
-  );
+  return <SearchPanelClient recommended={recommended} allNotes={allNotes} />;
 }

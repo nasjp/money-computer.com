@@ -1,15 +1,14 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-
-import { ContentCard } from "@/components/content-card";
 import { Footer } from "@/components/footer";
+import { NoteCard } from "@/components/note-card";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import { getPublishedContentMeta } from "@/lib/content";
 import { formatDate } from "@/lib/date";
+import { getPublishedNoteMeta } from "@/lib/note";
 
 export default async function Home() {
-  const published = await getPublishedContentMeta();
+  const published = await getPublishedNoteMeta();
   const latest = published[0];
   const feed = latest ? published.slice(1, 4) : published.slice(0, 3);
 
@@ -87,8 +86,8 @@ export default async function Home() {
             </div>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {feed.map((content) => (
-              <ContentCard key={content.slug} content={content} />
+            {feed.map((note) => (
+              <NoteCard key={note.slug} note={note} />
             ))}
           </div>
         </div>
