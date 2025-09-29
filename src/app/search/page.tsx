@@ -4,7 +4,7 @@ import { SearchPanel } from "@/components/search-panel";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
-  title: "検索 | Money Computer Reading Notes",
+  title: "検索 | お金コンピュータ",
 };
 
 export default function SearchPage() {
@@ -15,14 +15,13 @@ export default function SearchPage() {
         <div className="container mx-auto px-6 py-16">
           <div className="space-y-4 text-balance">
             <span className="text-xs uppercase tracking-[0.28em] text-muted-foreground">
-              Search Notes
+              Search Contents
             </span>
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              キーワードで読書ノートを横断検索
+              キーワードでコンテンツを横断検索
             </h1>
             <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              公開中のMDXノート全文を DuckDB + lindera
-              でインデックス化しています。洞察や引用、タグなど任意のテキストで検索できます。
+              公開中のコンテンツ全文をインデックス化しています。キーワードやタグなど任意のテキストで検索できます。
             </p>
           </div>
           <div className="mt-10">

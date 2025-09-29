@@ -63,7 +63,7 @@ export function SearchPanel() {
         {!statusMessage && !error ? (
           <p className="text-xs text-muted-foreground">
             {query.trim().length === 0
-              ? "公開済みのMDXノート全体を対象に検索できます。キーワードを入力してください。"
+              ? "公開済みのコンテンツ全体を対象に検索できます。キーワードを入力してください。"
               : isSearching
                 ? "検索中..."
                 : `${results.length}件ヒット`}

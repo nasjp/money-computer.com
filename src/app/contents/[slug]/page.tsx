@@ -34,7 +34,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${target.title} | Money Computer Reading Notes`,
+    title: `${target.title} | お金コンピュータ`,
     description: target.summary,
     openGraph: {
       title: target.title,

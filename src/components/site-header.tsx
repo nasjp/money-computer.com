@@ -6,7 +6,7 @@ const navItems = [
   { href: "/search", label: "Search" },
 ] satisfies ReadonlyArray<{ href: string; label: string }>;
 
-const brandLabel = "Money Computer";
+const brandLabel = "お金コンピュータ";
 
 export function SiteHeader() {
   return (

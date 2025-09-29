@@ -20,17 +20,16 @@ export default async function Home() {
         <div className="container mx-auto grid gap-10 px-6 py-16 lg:grid-cols-[2fr_1fr] lg:items-end">
           <div className="space-y-6">
             <span className="text-xs uppercase tracking-[0.32em] text-muted-foreground">
-              Reading Strategy Ops
+              MONEY COMPUTER
             </span>
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              洞察→実験→定着を接続する読書ノートの公開フィード
+              お金とコンピュータにものすごく興味がある人の読書ノートです。
             </h1>
             <p className="max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
-              書籍から得た洞察を即座にフィールドで検証し、勝率・期待値・試行回数のレバーへ落とし込むための
-              ノートをMDXで管理しています。最新のインサイトとPlaybookをフィードで追いかけましょう。
+              書籍から得たことを検証し、落とし込むために読書ノートをつけています。
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg">
+              <Button asChild size="lg" variant="outline">
                 <Link href="/contents">全コンテンツを見る</Link>
               </Button>
             </div>
@@ -47,7 +46,9 @@ export default async function Home() {
                     <ArrowUpRight className="size-4 text-muted-foreground transition group-hover:text-foreground" />
                   </div>
                   <h2 className="text-lg font-semibold tracking-tight text-foreground">
-                    <span className="transition group-hover:text-primary">{latest.title}</span>
+                    <span className="transition group-hover:text-primary">
+                      {latest.title}
+                    </span>
                   </h2>
                   {latest.insight ? (
                     <p className="text-sm leading-relaxed text-muted-foreground transition group-hover:text-muted-foreground/80">
@@ -78,10 +79,10 @@ export default async function Home() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                最新フィード
+                最近のコンテンツ
               </h2>
               <p className="text-sm text-muted-foreground">
-                更新順で公開ノートを最大3件まで表示します。
+                最近更新されたコンテンツです。
               </p>
             </div>
           </div>

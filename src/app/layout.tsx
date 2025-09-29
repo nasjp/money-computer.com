@@ -14,11 +14,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Money Computer Reading Notes",
-    template: "%s | Money Computer Reading Notes",
+    default: "お金コンピュータ",
+    template: "%s | お金コンピュータ",
   },
-  description:
-    "洞察・実験・定着を接続し、売上レバーを磨くための読書ノートをMDXで静的生成しています。",
+  description: "お金とコンピュータにものすごく興味がある人の読書ノートです。",
   metadataBase: new URL("https://money-computer.com"),
 };
 
