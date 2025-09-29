@@ -4,12 +4,12 @@ import process from "node:process";
 
 import matter from "gray-matter";
 
-interface GeneratedDocument {
+type GeneratedDocument = {
   slug: string;
   title: string;
   summary: string;
   content: string;
-}
+};
 
 const SUMMARY_MAX_LENGTH = 160;
 

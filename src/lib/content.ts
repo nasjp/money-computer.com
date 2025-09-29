@@ -42,16 +42,16 @@ export type ContentMeta = {
   description: string;
 };
 
-export interface ContentDetail extends ContentMeta {
+export type ContentDetail = ContentMeta & {
   body: string;
-}
+};
 
-interface RawContent {
+type RawContent = {
   meta: ContentMeta;
   body: string;
   plainText: string;
   referenceLabels: string[];
-}
+};
 
 function toPlainText(value: string) {
   return value

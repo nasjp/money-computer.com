@@ -5,11 +5,11 @@ import type { ContentMeta } from "@/lib/content";
 import { formatDate } from "@/lib/date";
 import { cn } from "@/lib/utils";
 
-interface ContentCardProps {
+type ContentCardProps = {
   content: ContentMeta;
   className?: string;
   highlightInsight?: boolean;
-}
+};
 
 export function ContentCard({
   content,
