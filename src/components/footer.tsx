@@ -8,7 +8,7 @@ const navItems = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background/95">
+    <footer className="mt-auto border-t border-border bg-background/95">
       <div className="container mx-auto flex flex-col gap-6 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium tracking-tight text-foreground">

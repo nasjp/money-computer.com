@@ -81,7 +81,7 @@ export default async function NoteDetailPage({
   );
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
       <article>
         <section className="border-b border-border bg-accent/20">

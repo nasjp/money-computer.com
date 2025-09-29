@@ -73,7 +73,7 @@ export default async function NotesPage({
   const filtered = filterByTags(meta, tagFilter);
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
       <section className="border-b border-border bg-accent/20">
         <div className="container mx-auto px-6 py-16">

@@ -14,7 +14,7 @@ export default async function Home() {
   const feed = latest ? published.slice(1, 4) : published.slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
       <section className="border-b border-border bg-accent/20">
         <div className="container mx-auto grid gap-10 px-6 py-16 lg:grid-cols-[2fr_1fr] lg:items-end">
