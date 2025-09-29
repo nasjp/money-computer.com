@@ -206,22 +206,11 @@ const loadMeta = cache(async () => {
   return rawNotes.map((raw) => raw.meta);
 });
 
-export const getAllNoteMeta = cache(async () => {
-  const meta = await loadMeta();
-  return sortByUpdatedAt(meta);
-});
-
 export const getPublishedNoteMeta = cache(async () => {
   const meta = await loadMeta();
   return sortByUpdatedAt(meta.filter((item) => item.status === "published"));
 });
-
-export const getLatestNoteMeta = cache(async (limit = 12) => {
-  const meta = await getPublishedNoteMeta();
-  return meta.slice(0, limit);
-});
-
-export function buildBacklinks(meta: NoteMeta[], slug: string) {
+function buildBacklinks(meta: NoteMeta[], slug: string) {
   return meta.filter((item) => item.outboundReferences.includes(slug));
 }
 
@@ -244,24 +233,4 @@ export const getNoteBySlug = cache(
 export const getBacklinksForSlug = cache(async (slug: string) => {
   const meta = await getPublishedNoteMeta();
   return buildBacklinks(meta, slug);
-});
-
-export const getSearchIndex = cache(async () => {
-  const rawNotes = await loadRawNotes();
-  const index = rawNotes
-    .filter((raw) => raw.meta.status === "published")
-    .map((raw) => {
-      const plainText = raw.plainText;
-
-      return {
-        slug: raw.meta.slug,
-        title: raw.meta.title,
-        tags: raw.meta.tags,
-        publishedAt: raw.meta.publishedAt,
-        updatedAt: raw.meta.updatedAt,
-        text: plainText,
-      };
-    });
-
-  return index;
 });
