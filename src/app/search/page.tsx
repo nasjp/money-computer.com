@@ -28,7 +28,7 @@ export default function SearchPage() {
               キーワードでノートを横断検索
             </h1>
             <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              公開中のノート全文をインデックス化しています。キーワードやタグなど任意のテキストで検索できます。
+              公開中のノート全文についてインデックス化しています。キーワードやタグなど任意のテキストで検索できます。
             </p>
           </div>
           <div className="mt-10">

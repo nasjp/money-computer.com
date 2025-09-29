@@ -27,7 +27,7 @@ export async function createStaticSearchEngine(
 ): Promise<StaticSearchEngine> {
   const { reportStatus } = options;
 
-  reportStatus?.("Linderaを初期化しています...");
+  reportStatus?.("検索エンジンを起動しています...");
 
   const linderaModule = await import("lindera-wasm-ipadic");
   await linderaModule.default();
@@ -96,11 +96,10 @@ export async function createStaticSearchEngine(
   const tokenizeInput = (value: string): string[] => {
     try {
       return toTokenStrings(tokenizer.tokenize(value) as unknown as TokenMap[]);
-    } catch (cause) {
+    } catch (_cause) {
       if (!tokenizerErrorLogged) {
-        console.error(
-          "静的検索: Linderaの形態素解析に失敗したためフォールバックを使用します。",
-          cause,
+        console.warn(
+          "静的検索: テキスト解析の初期処理で問題が発生したためフォールバック処理を利用します。",
         );
         tokenizerErrorLogged = true;
       }
@@ -109,7 +108,7 @@ export async function createStaticSearchEngine(
     }
   };
 
-  reportStatus?.("DuckDBを初期化しています...");
+  reportStatus?.("検索データベースを準備しています...");
 
   const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
   if (!bundle.mainWorker) {

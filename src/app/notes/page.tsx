@@ -95,10 +95,10 @@ export default async function NotesPage({
                 Notes Library
               </span>
               <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                Playbookに直結する19冊の読書ノート
+                ノート
               </h1>
               <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                なるべく、週に10時間以上読書か、考えて、書き込んでいます。読みやすいものであることは絶対に心がけません。
+                可能な限り週10時間以上を読書・思考・ノートに充てています。文章は読みやすいものであることは絶対に心がけません。
               </p>
             </div>
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
