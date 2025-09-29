@@ -98,8 +98,7 @@ export default async function NotesPage({
                 Playbookに直結する19冊の読書ノート
               </h1>
               <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                タグや更新日で絞り込みながら、洞察とPlaybookを参照できます。
-                フロントマターで更新履歴を管理し、ビルド時に静的生成しています。
+                なるべく、週に10時間以上読書か、考えて、書き込んでいます。読みやすいものであることは絶対に心がけません。
               </p>
             </div>
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -141,7 +140,7 @@ export default async function NotesPage({
 
       <section className="bg-background">
         <div className="container mx-auto px-6 py-16">
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((content) => (
               <ContentCard key={content.slug} content={content} />
             ))}

@@ -1,42 +1,21 @@
 "use client";
 
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
 
+import { ContentCard } from "@/components/content-card";
+import type { ContentMeta } from "@/lib/content";
 import { useStaticSearch } from "@/lib/static-search";
 
-type RecommendedResult = {
-  slug: string;
-  title: string;
-  description: string;
-  updatedAtLabel: string;
-};
-
 type SearchPanelClientProps = {
-  recommended: RecommendedResult[];
+  recommended: ContentMeta[];
+  allContent: ContentMeta[];
 };
 
-type DisplayItem = {
-  key: string;
-  slug: string;
-  title: string;
-  description: string;
-  badgeVariant: "score" | "meta";
-  badgeLabel: string;
-};
-
-const DESCRIPTION_MAX_LENGTH = 160;
-
-function truncate(value: string) {
-  const characters = Array.from(value);
-  if (characters.length <= DESCRIPTION_MAX_LENGTH) {
-    return value;
-  }
-  return `${characters.slice(0, DESCRIPTION_MAX_LENGTH).join("")}…`;
-}
-
-export function SearchPanelClient({ recommended }: SearchPanelClientProps) {
+export function SearchPanelClient({
+  recommended,
+  allContent,
+}: SearchPanelClientProps) {
   const {
     query,
     setQuery,
@@ -64,33 +43,28 @@ export function SearchPanelClient({ recommended }: SearchPanelClientProps) {
 
   const hasQuery = query.trim().length > 0;
 
-  const displayItems: DisplayItem[] = useMemo(() => {
+  const metaBySlug = useMemo(() => {
+    const map = new Map<string, ContentMeta>();
+    for (const item of allContent) {
+      map.set(item.slug, item);
+    }
+    return map;
+  }, [allContent]);
+
+  const displayContent: ContentMeta[] = useMemo(() => {
     if (!hasQuery) {
-      return recommended.map((item) => ({
-        key: `recommended-${item.slug}`,
-        slug: item.slug,
-        title: item.title,
-        description: item.description,
-        badgeVariant: "meta" as const,
-        badgeLabel: `最終更新: ${item.updatedAtLabel}`,
-      }));
+      return recommended;
     }
 
-    return results.map((result) => {
-      const baseText = result.summary?.trim().length
-        ? result.summary.trim()
-        : result.content;
-
-      return {
-        key: `search-${result.id}`,
-        slug: result.slug,
-        title: result.title,
-        description: truncate(baseText.trim()),
-        badgeVariant: "score" as const,
-        badgeLabel: `SCORE ${result.score.toFixed(2)}`,
-      };
-    });
-  }, [hasQuery, recommended, results]);
+    const found: ContentMeta[] = [];
+    for (const result of results) {
+      const meta = metaBySlug.get(result.slug);
+      if (meta && !found.some((item) => item.slug === meta.slug)) {
+        found.push(meta);
+      }
+    }
+    return found;
+  }, [hasQuery, recommended, results, metaBySlug]);
 
   const placeholder = useMemo(
     () =>
@@ -126,7 +100,7 @@ export function SearchPanelClient({ recommended }: SearchPanelClientProps) {
     !isSearching &&
     !statusMessage &&
     !error &&
-    displayItems.length === 0;
+    displayContent.length === 0;
 
   return (
     <div className="space-y-8">
@@ -161,34 +135,11 @@ export function SearchPanelClient({ recommended }: SearchPanelClientProps) {
             該当するノートは見つかりませんでした。
           </p>
         ) : null}
-        <ul className="space-y-4">
-          {displayItems.map((item) => (
-            <li key={item.key}>
-              <Link
-                href={`/notes/${item.slug}`}
-                className="block rounded-lg border border-border/70 bg-card/30 px-5 py-4 transition hover:border-primary/60 hover:bg-card"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {item.title}
-                  </h3>
-                  {item.badgeVariant === "score" ? (
-                    <span className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-                      {item.badgeLabel}
-                    </span>
-                  ) : (
-                    <span className="text-xs text-muted-foreground/80">
-                      {item.badgeLabel}
-                    </span>
-                  )}
-                </div>
-                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                  {item.description}
-                </p>
-              </Link>
-            </li>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {displayContent.map((item) => (
+            <ContentCard key={item.slug} content={item} />
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

@@ -86,7 +86,7 @@ export default async function Home() {
               </p>
             </div>
           </div>
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {feed.map((content) => (
               <ContentCard key={content.slug} content={content} />
             ))}
