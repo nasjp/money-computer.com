@@ -1,14 +1,18 @@
 import { promises as fs } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import process from "node:process";
 
 import matter from "gray-matter";
+import type { Tokenize } from "../src/lib/static-search/tokenizer";
+import { createTokenizer } from "../src/lib/static-search/tokenizer";
 
 type GeneratedDocument = {
   slug: string;
   title: string;
   summary: string;
   note: string;
+  tokens: string;
 };
 
 const SUMMARY_MAX_LENGTH = 160;
@@ -68,6 +72,7 @@ function createSummary(value: string): string {
 
 async function buildDocument(
   fileName: string,
+  tokenize: Tokenize,
 ): Promise<GeneratedDocument | null> {
   const filePath = path.join(NOTE_ROOT, fileName);
   const file = await fs.readFile(filePath, "utf8");
@@ -90,11 +95,15 @@ async function buildDocument(
   const plainText = toPlainText(markdown ?? "");
   const summary = createSummary(plainText);
 
+  const note = normalizeWhitespace(segments.join("\n\n"));
+  const tokenString = tokenize(note).join(" ");
+
   return {
     slug,
     title,
     summary,
-    note: normalizeWhitespace(segments.join("\n\n")),
+    note,
+    tokens: tokenString,
   };
 }
 
@@ -102,9 +111,15 @@ async function main(): Promise<void> {
   await ensureNoteDirectory();
   const mdxFiles = await loadMdxFiles();
 
+  const require = createRequire(import.meta.url);
+  const wasmPath = require.resolve("lindera-wasm-ipadic/lindera_wasm_bg.wasm");
+  const wasmBinary = await fs.readFile(wasmPath);
+
+  const { tokenize } = await createTokenizer({ moduleOrPath: wasmBinary });
+
   const docs: GeneratedDocument[] = [];
   for (const fileName of mdxFiles) {
-    const doc = await buildDocument(fileName);
+    const doc = await buildDocument(fileName, tokenize);
     if (doc) {
       docs.push(doc);
     }

@@ -12,6 +12,7 @@ export type SearchDocument = {
   title: string;
   summary: string;
   note: string;
+  tokens: string;
 };
 
 export type TokenMap = Map<string, string>;
