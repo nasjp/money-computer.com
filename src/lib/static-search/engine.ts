@@ -1,12 +1,11 @@
 import * as duckdb from "@duckdb/duckdb-wasm";
 
 import { DOCS, MANUAL_BUNDLES } from "./constants";
+import { createTokenizer } from "./tokenizer";
 import type {
-  LinderaTokenizer,
   SearchResult,
   StaticSearchEngine,
   StaticSearchVersions,
-  TokenMap,
 } from "./types";
 
 export type CreateStaticSearchEngineOptions = {
@@ -29,84 +28,8 @@ export async function createStaticSearchEngine(
 
   reportStatus?.("検索エンジンを起動しています...");
 
-  const linderaModule = await import("lindera-wasm-ipadic");
-  await linderaModule.default();
-
-  const builder = new linderaModule.TokenizerBuilder();
-  builder.setDictionary("embedded://ipadic");
-  builder.setMode("normal");
-  builder.appendCharacterFilter("unicode_normalize", { kind: "nfkc" });
-  builder.appendTokenFilter("lowercase", {});
-  builder.appendTokenFilter("japanese_compound_word", {
-    kind: "ipadic",
-    tags: ["名詞,数"],
-    new_tag: "名詞,数",
-  });
-  builder.appendTokenFilter("japanese_number", { tags: ["名詞,数"] });
-
-  const tokenizer = builder.build() as unknown as LinderaTokenizer;
-
-  const toTokenStrings = (tokenMaps: TokenMap[]): string[] => {
-    const tokens: string[] = [];
-    for (const token of tokenMaps) {
-      const value = token.get("text");
-      if (typeof value !== "string") {
-        continue;
-      }
-      const sanitized = value.trim();
-      if (sanitized.length === 0) {
-        continue;
-      }
-      tokens.push(sanitized);
-    }
-    return tokens;
-  };
-
-  const fallbackSegmenter =
-    typeof Intl !== "undefined" && "Segmenter" in Intl
-      ? new Intl.Segmenter("ja", { granularity: "word" })
-      : null;
-
-  const fallbackTokenize = (value: string): string[] => {
-    if (fallbackSegmenter) {
-      const segments: string[] = [];
-      for (const item of fallbackSegmenter.segment(value)) {
-        const text = item.segment.trim();
-        if (text.length === 0) {
-          continue;
-        }
-        if ("isWordLike" in item && item.isWordLike === false) {
-          continue;
-        }
-        segments.push(text);
-      }
-      if (segments.length > 0) {
-        return segments;
-      }
-    }
-
-    return value
-      .split(/\s+/)
-      .map((part) => part.trim())
-      .filter((part) => part.length > 0);
-  };
-
-  let tokenizerErrorLogged = false;
-
-  const tokenizeInput = (value: string): string[] => {
-    try {
-      return toTokenStrings(tokenizer.tokenize(value) as unknown as TokenMap[]);
-    } catch (_cause) {
-      if (!tokenizerErrorLogged) {
-        console.warn(
-          "静的検索: テキスト解析の初期処理で問題が発生したためフォールバック処理を利用します。",
-        );
-        tokenizerErrorLogged = true;
-      }
-      const fallbackTokens = fallbackTokenize(value);
-      return fallbackTokens;
-    }
-  };
+  const { tokenize: tokenizeInput, version: linderaVersion } =
+    await createTokenizer();
 
   reportStatus?.("検索データベースを準備しています...");
 
@@ -132,7 +55,7 @@ export async function createStaticSearchEngine(
   );
 
   for (const doc of DOCS) {
-    const tokens = tokenizeInput(doc.note).join(" ");
+    const tokens = doc.tokens;
 
     const statement = await connection.prepare(
       "INSERT INTO sora_doc (slug, title, summary, note, note_t) VALUES (?, ?, ?, ?, ?)",
@@ -158,7 +81,7 @@ export async function createStaticSearchEngine(
   const versions: StaticSearchVersions = {
     duckdb: await db.getVersion(),
     duckdbWasm: duckdb.PACKAGE_VERSION,
-    lindera: linderaModule.getVersion(),
+    lindera: linderaVersion,
   };
 
   reportStatus?.(null);
